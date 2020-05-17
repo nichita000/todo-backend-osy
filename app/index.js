@@ -1,11 +1,14 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import { ToDo } from './db';
 
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(cors());
 
 function isValidTodo({ title, description, owner }) {
   const isValid = value => value && (typeof value === 'string') && value.length > 3;
@@ -32,7 +35,7 @@ function isValidTodo({ title, description, owner }) {
 app.get('/todos/:owner', (req, res) => {
   ToDo.find({ owner: req.params.owner }, (err, todos) => {
     if (err) {
-      console.log(err);
+      res.json(err);
     }
 
     res.json(todos);
@@ -47,11 +50,13 @@ app.post('/todos', (req, res) => {
 
   const todo = new ToDo(req.body);
   todo.save(null, (err, todo) => {
+
     if (err) {
-      console.log(err);
+      res.json(err);
+      return;
     }
 
-    res.json(todo);
+    res.send(todo);
   });
 });
 
@@ -63,7 +68,7 @@ app.delete('/todos/:id', (req, res) => {
       console.log(err);
     }
 
-    res.json(todoId)
+    res.json(todoId);
   })
 });
 

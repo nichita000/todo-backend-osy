@@ -13,7 +13,7 @@ dbConnection.once('open', () => {
 });
 
 const ToDoSchema = new mongoose.Schema({
-  title: { type: String, unique: true },
+  title: String,
   description: String,
   owner: String,
 });
